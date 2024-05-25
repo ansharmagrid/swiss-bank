@@ -1,5 +1,7 @@
 package com.swiss.bank.user.service.services.impl;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,7 @@ public class UserServiceImpl implements UserService {
 						.address(registerUserRequest.getAddress())
 						.dateOfBirth(registerUserRequest.getDateOfBirth())
 						.email(registerUserRequest.getEmail())
+						.roles(new ArrayList<>())
 						.fullName(registerUserRequest.getFullName())
 						.gender(registerUserRequest.getGender())
 						.identificationType(

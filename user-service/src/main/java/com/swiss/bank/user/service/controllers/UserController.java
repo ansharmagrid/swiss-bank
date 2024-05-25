@@ -3,6 +3,7 @@ package com.swiss.bank.user.service.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.swiss.bank.user.service.entities.User;
 import com.swiss.bank.user.service.services.UserService;
 
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RestControllerAdvice
@@ -20,9 +21,9 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@GetMapping("/all")
-	public ResponseEntity<Flux<User>> getAllUsers(){
-		return ResponseEntity.ok(userService.findAllUsers());
+	@GetMapping("/{username}")
+	public ResponseEntity<Mono<User>> getUserByUsername(@PathVariable String username){
+		return ResponseEntity.ok(userService.findUserByUsername(username));
 	}
 	
 }

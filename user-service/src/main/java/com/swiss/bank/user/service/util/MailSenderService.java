@@ -13,7 +13,7 @@ public class MailSenderService {
 
 	@Autowired
 	JavaMailSender javaMailSender;
-	
+
 	public void sendMail(String message, String subject, String to, String cc) throws MessagingException {
 		MimeMessage mailMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailMessage, true);
@@ -21,6 +21,6 @@ public class MailSenderService {
 		mimeMessageHelper.setText(message);
 		mimeMessageHelper.setTo(to);
 		javaMailSender.send(mailMessage);
-		
+
 	}
 }

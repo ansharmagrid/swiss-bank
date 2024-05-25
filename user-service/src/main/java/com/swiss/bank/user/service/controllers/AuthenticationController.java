@@ -1,7 +1,5 @@
 package com.swiss.bank.user.service.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +32,8 @@ public class AuthenticationController {
 	UserService userService;
 
 	@PostMapping("/login")
-	public ResponseEntity<Mono<LoginResponse>> handleUserLogin(
-			@Valid @RequestBody LoginRequest loginRequest) {
-		return ResponseEntity.ok(authenticationService.login(loginRequest));
+	public ResponseEntity<Mono<LoginResponse>> handleUserLogin(@Valid @RequestBody LoginRequest loginRequest, ServerWebExchange exchange) {
+		return ResponseEntity.ok(authenticationService.login(loginRequest, exchange));
 	}
 
 	@GetMapping("/login")
@@ -45,21 +42,8 @@ public class AuthenticationController {
 	}
 
 	@GetMapping("/register")
-	public ResponseEntity<Mono<RegisterUserResponse>> register(
-			@Valid @RequestBody RegisterUserRequest registerUserRequest) {
-		return ResponseEntity
-				.ok(authenticationService.register(registerUserRequest));
+	public ResponseEntity<Mono<RegisterUserResponse>> register(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
+		return ResponseEntity.ok(authenticationService.register(registerUserRequest));
 	}
 
-	@GetMapping("/validateLogin")
-	public ResponseEntity<Mono<Boolean>> validateLogin(
-			ServerWebExchange exchange) {
-		return ResponseEntity.ok(authenticationService.validateLogin(exchange));
-	}
-	
-	@GetMapping("/validateRole")
-	public ResponseEntity<Mono<Boolean>> validateRole(ServerWebExchange exchange, @RequestBody List<String> rolesToValidate){
-		return ResponseEntity.ok(authenticationService.validateRole(exchange, rolesToValidate));
-	}
-	
 }

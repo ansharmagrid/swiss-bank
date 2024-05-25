@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.swiss.bank.user.service.definitions.Gender;
@@ -25,16 +26,17 @@ public class User {
 
 	@Id
 	private String id;
+	private String userId;
 	@Nonnull
-	@Builder.Default
-	private String userId = String.valueOf(System.currentTimeMillis());
-	@Nonnull
+	@Indexed(unique = true)
 	private String username;
 	@Nonnull
 	private String password;
 	@Nonnull
+	@Indexed(unique = true)
 	private String email;
 	@Nonnull
+	@Indexed(unique = true)
 	private String phone;
 	@Nonnull
 	private String fullName;
@@ -49,9 +51,10 @@ public class User {
 	@Nonnull
 	private IdentificationType identificationType;
 	@Nonnull
+	@Indexed(unique = true)
 	private String identificationId;
+	@Nonnull
 	private List<Role> roles;
-	private List<Account> accounts;
 	private Date createdAt;
 	private Date lastLoginAt;
 	private String profilePictureUrl;
