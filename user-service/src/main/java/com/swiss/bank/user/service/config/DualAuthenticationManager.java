@@ -30,6 +30,7 @@ public class DualAuthenticationManager implements ReactiveAuthenticationManager{
 		
 		return userRepository
 					.findUserByUsername(username)
+					.switchIfEmpty(Mono.error(new InvalidUsernamePasswordException("Invalida username/password exception")))
 					.map(user -> {
 						if(!passwordEncoder.matches(password, user.getPassword())) {
 							throw new InvalidUsernamePasswordException("for user: "+user.getUsername());

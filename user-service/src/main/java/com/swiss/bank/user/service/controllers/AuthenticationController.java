@@ -6,12 +6,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.swiss.bank.user.service.exceptions.DuplicateUsernameException;
 import com.swiss.bank.user.service.models.LoginRequest;
 import com.swiss.bank.user.service.models.LoginResponse;
+import com.swiss.bank.user.service.models.LogoutResponse;
 import com.swiss.bank.user.service.models.RegisterUserRequest;
 import com.swiss.bank.user.service.models.RegisterUserResponse;
 import com.swiss.bank.user.service.services.AuthenticationService;
@@ -41,9 +44,23 @@ public class AuthenticationController {
 		return "Please login using POST method with proper credentials";
 	}
 
-	@GetMapping("/register")
+	@PostMapping("/register")
 	public ResponseEntity<Mono<RegisterUserResponse>> register(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
 		return ResponseEntity.ok(authenticationService.register(registerUserRequest));
+	}
+	
+	@GetMapping("/checkUsernameAvailable")
+	public ResponseEntity<Mono<String>> checkUsernameAvailable(@RequestParam String username){
+		return ResponseEntity.ok(userService
+			.findUserByUsername(username)
+			.flatMap(__ -> Mono.error(new DuplicateUsernameException("")))
+			.switchIfEmpty(Mono.just("success"))
+			.cast(String.class));
+	}
+	
+	@GetMapping("/logout")
+	public ResponseEntity<Mono<LogoutResponse>> logout(ServerWebExchange exchange){
+		return ResponseEntity.ok(authenticationService.logout(exchange));
 	}
 
 }

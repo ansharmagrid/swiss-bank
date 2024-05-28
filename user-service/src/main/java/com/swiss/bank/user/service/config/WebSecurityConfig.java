@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -25,7 +26,7 @@ public class WebSecurityConfig {
 
 	private static final List<String> ALLOWED_ORIGINS = Collections.unmodifiableList(
 			List.of("http://localhost:10000", "http://localhost:10001", "http://localhost:10002", "http://localhost:10003", "http://localhost:10004",
-					"http://localhost:10005", "http://localhost:10006", "http://localhost:10007", "https://www.google.com"));
+					"http://localhost:10005", "http://localhost:10006", "http://localhost:10007", "https://www.google.com", "http://localhost:3000"));
 	private static final List<String> ALLOWED_METHODS = Collections.unmodifiableList(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 
 	@Autowired
@@ -50,12 +51,17 @@ public class WebSecurityConfig {
 
 	@Bean
 	SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
-		return serverHttpSecurity.csrf(csrf -> csrf.disable())
+		return serverHttpSecurity
+				.csrf(csrf -> csrf.disable())
+				.httpBasic(http -> http.authenticationEntryPoint(new NoPopupAuthenticationEntryPoint()))
 				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 				.authorizeExchange(exchange -> exchange
-						.pathMatchers("/auth/**", "/user/**").permitAll()
+						.pathMatchers("/auth/**").permitAll()
+						.pathMatchers(HttpMethod.OPTIONS, "**").permitAll()
+						.pathMatchers("/admin/**", "/user/**").hasAuthority("STAFF")
 						.anyExchange().authenticated())
 				.addFilterBefore(jwtRequestFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+				.formLogin(form -> form.disable())
 				.build();
 	}
 }

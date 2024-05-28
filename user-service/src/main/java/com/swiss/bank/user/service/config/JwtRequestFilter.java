@@ -11,6 +11,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
+import com.swiss.bank.user.service.exceptions.InvalidUsernamePasswordException;
 import com.swiss.bank.user.service.repositories.UserRepository;
 import com.swiss.bank.user.service.util.DataUtil;
 import com.swiss.bank.user.service.util.JwtTokenUtil;
@@ -45,7 +46,10 @@ public class JwtRequestFilter implements WebFilter {
 			return chain.filter(exchange);
 		}
 		log.atInfo().log("Authentication successful. User should get the access: {}", username);
-		return userRepository.findUserByUsername(username).flatMap(user -> {
+		return userRepository
+				.findUserByUsername(username)
+				.switchIfEmpty(Mono.error(new InvalidUsernamePasswordException("Invalida username/password exception")))
+				.flatMap(user -> {
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 					user.getUsername(), 
 					user.getPassword(),

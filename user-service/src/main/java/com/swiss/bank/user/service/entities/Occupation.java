@@ -1,6 +1,6 @@
 package com.swiss.bank.user.service.entities;
 
-import org.springframework.data.annotation.Id;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Preferences {
-	@Id
-	private String id;
-	private String useDarkTheme;
+public class Occupation {
+	
+	private List<Job> jobs;
+
 }

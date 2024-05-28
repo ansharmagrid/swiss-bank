@@ -1,5 +1,6 @@
 package com.swiss.bank.user.service.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +15,7 @@ public class DataUtil{
 	}
 	
 	public static List<SimpleGrantedAuthority> getGrantedAuthoritiesFromRoles(List<Role> roles){
+		if(roles==null) return new ArrayList<>();
 		return roles
 				.stream()
 				.flatMap(role -> role.getPrivileges().parallelStream())

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.swiss.bank.user.service.entities.User;
 import com.swiss.bank.user.service.services.UserService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -21,9 +22,14 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@GetMapping("/{username}")
+	@GetMapping("/find/{username}")
 	public ResponseEntity<Mono<User>> getUserByUsername(@PathVariable String username){
 		return ResponseEntity.ok(userService.findUserByUsername(username));
+	}
+	
+	@GetMapping("/all")
+	public ResponseEntity<Flux<User>> findAllUsers(){
+		return ResponseEntity.ok(userService.findAllUsers());
 	}
 	
 }

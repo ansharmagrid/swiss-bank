@@ -1,12 +1,5 @@
 package com.swiss.bank.user.service.models;
 
-import java.util.Date;
-
-import com.swiss.bank.user.service.definitions.Gender;
-import com.swiss.bank.user.service.definitions.IdentificationType;
-import com.swiss.bank.user.service.definitions.Nationality;
-import com.swiss.bank.user.service.entities.Address;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -31,17 +24,5 @@ public class RegisterUserRequest {
 	@NotBlank
 	@Email(message = "Invalid email")
 	private String email;
-	@NotBlank
-	@Pattern(regexp = "^[+]{0,1}[0-9]{10,12}$", message = "invalid phone number")
-	private String phone;
-	@NotBlank
-	private String fullName;
-	private Date dateOfBirth;
-	private Address address;
-	private Gender gender;
-	private Nationality nationality;
-	private IdentificationType identificationType;
-	@NotBlank
-	private String identificationId;
 
 }

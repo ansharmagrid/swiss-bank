@@ -16,8 +16,8 @@ public class JwtTokenUtil {
 
 	private static final String SECRET_HASHING_KEY = "S3CR3T_K3Y";
 	private static final String ISSUER_NAME = "admin@swiss-bank.com";
-	private static final long EXPIRATION_TIME_MILLIS = 24 * 3600 * 1000;
-	
+	private static final long EXPIRATION_TIME_MILLIS = 3600 * 1000;
+
 	private Claims getClaimsFromAuthToken(String authToken) {
 		return Jwts
 				.parser()
@@ -27,19 +27,24 @@ public class JwtTokenUtil {
 	}
 
 	public boolean validateToken(String authToken) {
-		log.atInfo().log("validating auth token : {}", authToken);
 		Claims claims = getClaimsFromAuthToken(authToken);
-		return claims.getIssuer().equals(ISSUER_NAME)
-				&& claims.getIssuedAt().after(new Date(System.currentTimeMillis()-EXPIRATION_TIME_MILLIS))
-				&& claims.getExpiration().after(new Date());
+		return claims
+				.getIssuer()
+				.equals(ISSUER_NAME) && 
+			claims
+				.getIssuedAt()
+				.after(new Date(System.currentTimeMillis() - EXPIRATION_TIME_MILLIS)) && 
+			claims
+				.getExpiration()
+				.after(new Date());
 	}
-	
+
 	public String generateAuthToken(String username) {
 		log.atInfo().log("Generating auth token for username: {}", username);
 		return Jwts.builder()
 				.setSubject(username)
 				.setIssuer(ISSUER_NAME)
-				.addClaims(Map.of("username",username))
+				.addClaims(Map.of("username", username))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS))
 				.signWith(SignatureAlgorithm.HS512, SECRET_HASHING_KEY)

@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Mono<User> validateLoginRequest(LoginRequest loginRequest) {
 		return userRepository.findUserByUsername(loginRequest.getUsername())
+				.switchIfEmpty(Mono.error(new InvalidUsernamePasswordException("Invalida username/password exception")))
 				.filter(user -> encoder.matches(loginRequest.getPassword(),
 						user.getPassword()))
 				.switchIfEmpty(Mono.error(new InvalidUsernamePasswordException(
@@ -58,20 +59,10 @@ public class UserServiceImpl implements UserService {
 			RegisterUserRequest registerUserRequest) {
 		return userRepository
 				.save(User.builder().username(registerUserRequest.getUsername())
-						.address(registerUserRequest.getAddress())
-						.dateOfBirth(registerUserRequest.getDateOfBirth())
 						.email(registerUserRequest.getEmail())
 						.roles(new ArrayList<>())
-						.fullName(registerUserRequest.getFullName())
-						.gender(registerUserRequest.getGender())
-						.identificationType(
-								registerUserRequest.getIdentificationType())
-						.identificationId(
-								registerUserRequest.getIdentificationId())
-						.nationality(registerUserRequest.getNationality())
-						.password(encoder
-								.encode(registerUserRequest.getPassword()))
-						.phone(registerUserRequest.getPhone()).build())
+						.password(encoder.encode(registerUserRequest.getPassword()))
+						.build())
 				.map(user -> RegisterUserResponse.builder()
 						.username(user.getUsername()).build());
 	}

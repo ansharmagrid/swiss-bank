@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 
+import com.swiss.bank.user.service.exceptions.DuplicateUsernameException;
 import com.swiss.bank.user.service.exceptions.InvalidUsernamePasswordException;
 import com.swiss.bank.user.service.models.ExceptionResponse;
 
@@ -20,48 +21,37 @@ import lombok.extern.slf4j.Slf4j;
 public class ExceptionController {
 
 	@ExceptionHandler({WebExchangeBindException.class})
-	public ResponseEntity<ExceptionResponse> handleGenericException(
-			WebExchangeBindException exception) {
-		String message = exception.getFieldErrors().stream().map(
-				error -> error.getField() + ": " + error.getDefaultMessage())
+	public ResponseEntity<ExceptionResponse> handleGenericException(WebExchangeBindException exception) {
+		String message = exception.getFieldErrors()
+				.stream()
+				.map(error -> error.getField() + ": " + error.getDefaultMessage())
 				.reduce("", (error1, error2) -> error1 + "\n" + error2);
 		log.atWarn().log("Field validation failed: {}", message);
 
-		return new ResponseEntity<>(
-				ExceptionResponse.builder().message(message).build(),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(ExceptionResponse.builder().message(message).build(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({InvalidUsernamePasswordException.class})
-	public ResponseEntity<ExceptionResponse> handleInvalidUsernamePasswordException(
-			InvalidUsernamePasswordException exception) {
-		log.atInfo().log("Invalid credentials for user: {}",
-				exception.getLocalizedMessage());
-		return new ResponseEntity<>(
-				ExceptionResponse.builder()
-						.message(exception.getLocalizedMessage()).build(),
-				HttpStatus.UNAUTHORIZED);
+	public ResponseEntity<ExceptionResponse> handleInvalidUsernamePasswordException(InvalidUsernamePasswordException exception) {
+		log.atInfo().log("Invalid credentials for user: {}", exception.getLocalizedMessage());
+		return new ResponseEntity<>(ExceptionResponse.builder().message(exception.getLocalizedMessage()).build(), HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler({NullPointerException.class})
-	public ResponseEntity<ExceptionResponse> handleNullPointerException(
-			NullPointerException exception) {
+	public ResponseEntity<ExceptionResponse> handleNullPointerException(NullPointerException exception) {
 		log.atError().log("Error: {}", exception.getMessage());
-		exception.printStackTrace();
-		return new ResponseEntity<>(
-				ExceptionResponse.builder()
-						.message(exception.getLocalizedMessage()).build(),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(ExceptionResponse.builder().message(exception.getLocalizedMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler({AuthenticationCredentialsNotFoundException.class, ExpiredJwtException.class})
-	public ResponseEntity<ExceptionResponse> handleNoAuthHeaderException(
-			Exception exception) {
+	public ResponseEntity<ExceptionResponse> handleNoAuthHeaderException(Exception exception) {
 		log.atError().log("Error: {}", exception.getMessage());
-		exception.printStackTrace();
-		return new ResponseEntity<>(
-				ExceptionResponse.builder()
-						.message(exception.getLocalizedMessage()).build(),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(ExceptionResponse.builder().message(exception.getLocalizedMessage()).build(), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler({DuplicateUsernameException.class})
+	public ResponseEntity<ExceptionResponse> handleDuplicateUsernameRequest(Exception exception) {
+		log.atError().log("Error: {}", exception.getMessage());
+		return new ResponseEntity<>(ExceptionResponse.builder().message(exception.getLocalizedMessage()).build(), HttpStatus.BAD_REQUEST);
 	}
 }

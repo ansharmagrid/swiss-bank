@@ -4,7 +4,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.swiss.bank.user.service.models.LoginRequest;
 import com.swiss.bank.user.service.models.LoginResponse;
-import com.swiss.bank.user.service.models.LogoutRequest;
 import com.swiss.bank.user.service.models.LogoutResponse;
 import com.swiss.bank.user.service.models.RegisterUserRequest;
 import com.swiss.bank.user.service.models.RegisterUserResponse;
@@ -17,6 +16,6 @@ public interface AuthenticationService {
 
 	public Mono<RegisterUserResponse> register(RegisterUserRequest userRegistrationRequest);
 
-	public Mono<LogoutResponse> logout(LogoutRequest logoutRequest, ServerWebExchange exchange);
+	public Mono<LogoutResponse> logout(ServerWebExchange exchange);
 
 }
