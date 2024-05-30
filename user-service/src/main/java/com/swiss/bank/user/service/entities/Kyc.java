@@ -1,5 +1,8 @@
 package com.swiss.bank.user.service.entities;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.swiss.bank.user.service.definitions.IdentificationType;
 
 import lombok.AllArgsConstructor;
@@ -11,8 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document
 public class Kyc {
 
+	@Id
+	private String id;
+	private String username;
 	private IdentificationType addressProofType;
 	private IdentificationType identityProofType;
 	private String addressProofId;

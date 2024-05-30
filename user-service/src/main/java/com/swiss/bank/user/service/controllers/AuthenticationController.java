@@ -1,6 +1,5 @@
 package com.swiss.bank.user.service.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,11 +27,14 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-	@Autowired
 	AuthenticationService authenticationService;
 
-	@Autowired
 	UserService userService;
+	
+	public AuthenticationController(AuthenticationService authenticationService,UserService userService) {
+		this.authenticationService = authenticationService;
+		this.userService = userService;
+	}
 
 	@PostMapping("/login")
 	public ResponseEntity<Mono<LoginResponse>> handleUserLogin(@Valid @RequestBody LoginRequest loginRequest, ServerWebExchange exchange) {
@@ -53,7 +55,7 @@ public class AuthenticationController {
 	public ResponseEntity<Mono<String>> checkUsernameAvailable(@RequestParam String username){
 		return ResponseEntity.ok(userService
 			.findUserByUsername(username)
-			.flatMap(__ -> Mono.error(new DuplicateUsernameException("")))
+			.flatMap(user -> Mono.error(new DuplicateUsernameException(username)))
 			.switchIfEmpty(Mono.just("success"))
 			.cast(String.class));
 	}

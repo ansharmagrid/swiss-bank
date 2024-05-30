@@ -5,31 +5,43 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.swiss.bank.user.service.util.MailSenderService;
+
+import jakarta.mail.MessagingException;
 
 @Service
 @Aspect
 public class MailSenderAOPConfig {
 	
-	@Autowired
 	MailSenderService mailSenderService;
 	
+	public MailSenderAOPConfig(MailSenderService mailSenderService) {
+		this.mailSenderService = mailSenderService;
+	}
+	
 	@Before("@annotation(com.swiss.bank.user.service.annotation.MailAlert)")
-    public void beforeMethodExecution(JoinPoint joinPoint) throws Exception {
-//		mailSenderService.sendMail("message", "to", "d.anubhav.sharma@gmail.com", "d.anubhav.sharma@gmail.com");
+    public void beforeMethodExecution(JoinPoint joinPoint) {
+		sendMail();
     }
 
     @After("@annotation(com.swiss.bank.user.service.annotation.MailAlert)")
-    public void afterMethodExecution(JoinPoint joinPoint) throws Exception{
-//		mailSenderService.sendMail("message", "to", "d.anubhav.sharma@gmail.com", "d.anubhav.sharma@gmail.com");
+    public void afterMethodExecution(JoinPoint joinPoint){
+		sendMail();
     }
     
 
     @AfterThrowing("@annotation(com.swiss.bank.user.service.annotation.MailAlert)")
-    public void afterErrorInMethodExecution(JoinPoint joinPoint) throws Exception{
-//		mailSenderService.sendMail("message", "to", "d.anubhav.sharma@gmail.com", "d.anubhav.sharma@gmail.com");
+    public void afterErrorInMethodExecution(JoinPoint joinPoint){
+		sendMail();
+    }
+    
+    private void sendMail() {
+    	try {
+			mailSenderService.sendMail(null, null, null, null);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class User {
 	private String email;
 	@Indexed(unique = true)
 	private String phone;
+	@DocumentReference()
 	private List<Role> roles;
 
 }

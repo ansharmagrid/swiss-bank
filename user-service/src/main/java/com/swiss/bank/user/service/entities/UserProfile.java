@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,14 +19,20 @@ import lombok.NoArgsConstructor;
 public class UserProfile {
 
 	@Id
+	private String id;
 	private String userId;
+	private String username;
+	@DocumentReference
 	private BasicInfo basicInfo;
+	@DocumentReference
 	private Address address;
+	@DocumentReference
 	private Occupation occupation;
+	@DocumentReference
 	private Kyc kyc;
 	private Date createdAt;
 	private Date lastLoginAt;
-	private String profilePictureUrl;
+	@DocumentReference
 	private Preferences preferences;
 	private boolean emailVerified;
 	private boolean governmentIdVerified;

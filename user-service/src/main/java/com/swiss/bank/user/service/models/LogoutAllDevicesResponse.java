@@ -1,5 +1,11 @@
 package com.swiss.bank.user.service.models;
 
-public class LogoutAllDevicesResponse {
+import lombok.Builder;
+import lombok.Data;
 
+@Data
+@Builder
+public class LogoutAllDevicesResponse {
+	
+	private String message;
 }

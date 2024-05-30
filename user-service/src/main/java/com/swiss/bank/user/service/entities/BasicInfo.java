@@ -2,6 +2,9 @@ package com.swiss.bank.user.service.entities;
 
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.swiss.bank.user.service.definitions.Gender;
 import com.swiss.bank.user.service.definitions.Nationality;
 
@@ -14,8 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document
 public class BasicInfo {
 
+	@Id
+	private String id;
+	private String username;
 	private String firstName;
 	private String lastName;
 	private String fullName;
@@ -27,5 +34,6 @@ public class BasicInfo {
 	private String secondaryEmail;
 	private String secondaryPhone;
 	private Nationality nationality;
+	private String profilePic;
 	
 }

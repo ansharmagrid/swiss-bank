@@ -3,6 +3,7 @@ package com.swiss.bank.user.service.util;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -14,14 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtTokenUtil {
 
-	private static final String SECRET_HASHING_KEY = "S3CR3T_K3Y";
+	@Value("${swiss.jwt.util.secret-hashing-key}")
+	private String secretHashingKey;
 	private static final String ISSUER_NAME = "admin@swiss-bank.com";
-	private static final long EXPIRATION_TIME_MILLIS = 3600 * 1000;
+	private static final long EXPIRATION_TIME_MILLIS = 3600 * 1000L;
 
 	private Claims getClaimsFromAuthToken(String authToken) {
 		return Jwts
 				.parser()
-				.setSigningKey(SECRET_HASHING_KEY)
+				.setSigningKey(secretHashingKey)
 				.parseClaimsJws(authToken)
 				.getBody();
 	}
@@ -44,10 +46,10 @@ public class JwtTokenUtil {
 		return Jwts.builder()
 				.setSubject(username)
 				.setIssuer(ISSUER_NAME)
-				.addClaims(Map.of("username", username))
+				.addClaims(Map.of(SwissConstants.USERNAME, username))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS))
-				.signWith(SignatureAlgorithm.HS512, SECRET_HASHING_KEY)
+				.signWith(SignatureAlgorithm.HS512, secretHashingKey)
 				.compact();
 	}
 }

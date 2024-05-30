@@ -8,11 +8,11 @@ import com.swiss.bank.user.service.models.LoginRequest;
 
 import reactor.core.publisher.Mono;
 
-public interface UserRepository extends ReactiveMongoRepository<User, String>{
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
 
-  Mono<User> findUserByUsername(String username);
+	Mono<User> findUserByUsername(String username);
 
-  @Query("{username: ?username, password: ?password}")
-  Mono<User> findUserByUsernameAndPassword(LoginRequest loginRequest);
+	@Query("{username: ?username, password: ?password}")
+	Mono<User> findUserByUsernameAndPassword(LoginRequest loginRequest);
 
 }

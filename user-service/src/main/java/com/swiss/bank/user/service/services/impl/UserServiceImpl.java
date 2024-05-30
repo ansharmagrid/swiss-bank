@@ -2,7 +2,6 @@ package com.swiss.bank.user.service.services.impl;
 
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +19,14 @@ import reactor.core.publisher.Mono;
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Autowired
 	PasswordEncoder encoder;
 
-	@Autowired
 	UserRepository userRepository;
+	
+	public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+		this.encoder = passwordEncoder;
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public Flux<User> findAllUsers() {

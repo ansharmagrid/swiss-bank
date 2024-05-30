@@ -13,10 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Document
-public class Preferences {
+public class FileDocument {
 
 	@Id
-	private String id;
+	private String fileId;
+	private String fileName;
+	private String fileType;
+	private String fileCategory;
+	private String fileSubCategory;
 	private String username;
-	private String useDarkTheme;
+	private byte[] fileData;
+	
 }
